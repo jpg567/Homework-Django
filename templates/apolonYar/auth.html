@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="col-md-4">
+            <h2 class="text-center mb-5">ورود به سیستم</h2>
+            <form action="{% url 'auth' %}" method="POST">
+                {% csrf_token %}
+                {% if phone %}
+                    <input type="hidden" name="phone" value="{{ phone }}">
+                    <div class="form-group">
+                        <label for="verification_code">کد تأیید</label>
+                        <input type="text" class="form-control" id="verification_code" name="verification_code" placeholder="کد تأیید" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">ورود</button>
+                {% else %}
+                    <div class="form-group">
+                        <label for="phone">شماره همراه</label>
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder="09123456789" required>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block">ارسال کد تأیید</button>
+                {% endif %}
+                {% if error %}
+                    <div class="alert alert-danger mt-3" id="error-message">{{ error }}</div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</body>
+</html>

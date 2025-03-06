@@ -1,0 +1,67 @@
+{% extends 'apolonYar/base.html' %}
+
+
+{% block apolonYar%}{{apolonYar}}{%endblock%}
+{% block content %}
+
+<table class="table table-striped text-center">
+<thead>
+    <tr>
+        <th>نام هنرجو</th>
+        <th>شماره هنرجو</th>
+        <th>مشاهده و نمره دهی</th>
+        <th>وضعیت</th>
+    </tr>
+</thead>
+<tbody>
+    {% for student in students %}
+    <tr>
+        <td>{{ student.full_name }}</td>
+        <td>{{ student.phone }}</td>
+        <td>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#student-page" 
+                class="file-link" 
+                data-student-id="{{ student.id }}" 
+                data-homework-weeks="{{ student.homework_set.all|join:', ' }}"
+                >
+                مشاهده هفته‌ها
+            </a>
+        </td>
+        {% if green_status%}
+        <td>
+            <div class="spinner-grow text-success"></div>
+        </td>
+        {% else%}
+        <td>
+            <span>نمره داده شده </span>
+        </td>
+        {% endif %}
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="4">No students available.</td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+
+<div class="modal fade" id="student-page" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="myModalLabel">هنرجو</h5>
+            <button type="button" class="btn-close m-0" data-bs-dismiss="modal" aria-label="Close" style="border-radius: 5px;"></button>
+        </div>
+        <div class="modal-body">
+            <table class="table table-striped text-center">
+                <tbody id="homework-weeks-list">
+                    <!-- Weeks will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+    
+ {% endblock %}
+

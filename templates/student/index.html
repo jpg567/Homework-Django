@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>هنرجو</title>
+    <script src="{% static 'js/students.js' %}" defer></script>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 76px; 
+        }
+    </style>
+</head>
+<body dir="rtl">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container-fluid"> 
+            <div class="d-flex justify-content-between w-100"> 
+                <div class="ml-auto mt-2">
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">{{student}}</a>
+                </div>
+                <div class="navbar-nav mx-4 mt-2"> 
+                    <span>تعداد جون های باقی مانده :</span>
+                    <span class="heart">&#10084;</span> 
+                    <span class="heart">&#10084;</span> 
+                    <span class="heart">&#10084;</span>
+                </div>
+                <div class="width-100">
+                    <div class="progress mt-2 mb-1">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ progress_percentage }}%;" aria-valuenow="{{ submitted_pictures_count }}" aria-valuemin="0" aria-valuemax="{{ max_pictures }}">
+                        </div>
+                    </div>
+                    <span style="color: black;">({{ submitted_pictures_count }}/{{ max_pictures }})</span>
+                    <span>تمارین ارسال شده</span>
+                </div>
+                
+                
+                
+                <div class="mr-auto"> <!-- Left-aligned item -->
+                    <form action="{% url 'logout' %}" method="POST" style="display: inline;"> <!-- Inline form -->
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">خروج</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <table class="table table-striped text-center">
+        <tbody>
+            {% for homework in homeworks %}
+            <tr>
+                <td> هفته {{ homework.week_number }}</td>
+                <td><a href="#" data-bs-toggle="modal" data-bs-target="#file-{{ homework.week_number }}" class="file-link">فایل</a></td>
+                <td>
+                    {% if homework.is_completed %}
+                    <div class="spinner-grow text-success"></div>
+                    {% else %}
+                    {% comment %} <div class="spinner-grow text-danger"></div> {% endcomment %}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% for homework in homeworks %}
+<div class="modal fade" id="file-{{ homework.week_number }}" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-start"> 
+                <h5 class="modal-title" id="myModalLabel">فایل های هفته {{ homework.week_number }}</h5>
+                <button type="button" class="btn-close m-0" data-bs-dismiss="modal" aria-label="Close" style="border-radius: 5px;"></button>
+            </div>
+            <div class="modal-body">
+                <div id="fileInputsContainer">
+                    <table class="table table-striped text-center">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <table id="pictures-container-{{ homework.week_number }}" class="table">
+                                        <!-- Pictures will be dynamically inserted here -->
+                                    </table>
+                                    
+                                    <div id="upload-container-{{ homework.week_number }}">
+                                        {% for i in "1234567891" %}
+                                        <div class="upload-item">
+                                            <span>عکس {{ forloop.counter }}</span>
+                                            <input type="file" name="pictures" class="form-control" placeholder="Upload Image {{ forloop.counter }}" />
+                                            <textarea class="form-control" placeholder="توضیحات عکس ..."></textarea>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="display: flex; justify-content: center;">
+                        <button type="button" class="btn btn-danger" onclick="deleteAllPictures({{ homework.week_number }})">حذف همه عکس‌ها</button>
+                        <button type="button" class="btn btn-success" onclick="submitFiles({{ homework.week_number }})">ثبت</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
